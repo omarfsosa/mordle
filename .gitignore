@@ -8,6 +8,7 @@
 
 # jupyter
 **/.ipynb_checkpoints/
+**/notebooks/
 
 # ides
 .idea/
