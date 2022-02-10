@@ -2,8 +2,8 @@ import click
 import random
 
 from mordle.corpus import Corpus
-from mordle.player import Bot, Human
 from mordle.game import Game
+from mordle import player
 
 
 @click.group()
@@ -21,18 +21,15 @@ def wordle():
 
 
 @wordle.command("play")
-@click.option("--auto", is_flag=True, default=False, help="Let a bot play the game")
+@click.option("--auto", "plyr", flag_value="Bot", help="Let a bot play the game")
+@click.option("--human", "plyr", flag_value="Human", help="Let a human play the game")
+@click.option("--semi", "plyr", flag_value="SemiHuman", help="Let a semi-human play the game")
 @click.option("--answer", type=str, default="", help="Force the answer")
-def new_game(auto, answer):
+def new_game(plyr, answer):
     if not answer:
         answer = random.choice(Corpus())
     else:
         answer = answer.lower()
 
-    if auto:
-        player = Bot()
-    else:
-        player = Human()
-
-    game = Game(player, answer)
+    game = Game(getattr(player, plyr)(), answer)
     game.run()
