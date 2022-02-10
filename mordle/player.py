@@ -5,8 +5,8 @@ import math
 from collections import defaultdict
 from pathlib import Path
 
+from mordle.corpus import SIZE, Corpus
 from mordle.patterns import Pattern
-from mordle.corpus import Corpus, SIZE
 
 
 def _load_corpus_entropies_from_disk():
@@ -15,8 +15,8 @@ def _load_corpus_entropies_from_disk():
     for the whole corpus. Assuming uniform
     prior probabilities on each word.
     """
-    here = Path(__file__).resolve()
-    path_data = here.parent.parent / "data" / "entropies.json"
+    pkg = Path(__name__).resolve()
+    path_data = pkg.parent / "mordle" / "data" / "entropies.json"
     with open(path_data, "r") as f:
         return json.load(f)
 
@@ -47,7 +47,6 @@ def calculate_entropies(corpus):
 
 
 class Player(abc.ABC):
-
     @abc.abstractmethod
     def respond(self, context):
         """
@@ -104,11 +103,7 @@ class SemiHuman(Player):
         self.human.update(result)
 
     def show_best_options(self):
-        best_options = heapq.nlargest(
-            5,
-            self.bot.entropies,
-            key=self.bot.entropies.get
-        )
+        best_options = heapq.nlargest(5, self.bot.entropies, key=self.bot.entropies.get)
         indent = " " * 4
         for option in best_options:
             print(f"{indent}{option}: {self.bot.entropies[option]:3.2f}")

@@ -7,8 +7,8 @@ def _load():
     """
     Load the full corpus from file,
     """
-    here = Path(__file__).resolve()
-    path_data = here.parent.parent / "data" / "wordle-corpus.txt"
+    pkg = Path(__name__).resolve()
+    path_data = pkg.parent / "mordle" / "data" / "wordle-corpus.txt"
     with open(path_data, "r") as f:
         lines = f.readlines()
 
@@ -36,6 +36,7 @@ class Corpus:
         Filter out the words for which the
         `guess` does not match the `pattern`.
         """
+
         def condition(word):
             pat = Pattern.from_words(guess, word)
             return pat == pattern

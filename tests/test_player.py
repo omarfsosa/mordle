@@ -1,7 +1,7 @@
 import pytest
 
-from mordle.game import Game
 from mordle.corpus import Corpus
+from mordle.game import Game
 from mordle.player import Bot
 
 

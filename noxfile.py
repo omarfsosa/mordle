@@ -1,6 +1,6 @@
 import nox
 
-locations = "phil", "tests", "noxfile.py"
+locations = "mordle", "tests", "noxfile.py"
 nox.options.sessions = "lint", "tests"
 
 
