@@ -21,10 +21,6 @@ def _yellow(x):
     return coloured(x, BGColour.WARNING)
 
 
-def _red(x):
-    return coloured(x, BGColour.FAIL)
-
-
 def _green(x):
     return coloured(x, BGColour.OKGREEN)
 

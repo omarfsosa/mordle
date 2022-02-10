@@ -1,30 +1,26 @@
 import random
+from dataclasses import dataclass, field
+
+from mordle.corpus import Corpus
 from mordle.patterns import Pattern
-from mordle.distribution import list_corpus, calculate_entropies, make_search_condition
+from mordle.player import SemiHuman
 
 
-class Bot:
-    def __init__(self):
-        self.guesses = []
-        self.patterns = []
-        self.options = list_corpus()
+@dataclass
+class Result:
+    guess: str
+    pattern: Pattern
 
-    @property
-    def entropies(self):
-        return calculate_entropies(self.options)
+    def is_correct(self):
+        return all(x == 0 for x in self.pattern)
 
-    @property
-    def best_guess(self):
-        return max(self.entropies, key=self.entropies.get)
+    def __str__(self):
+        return self.pattern.display(self.guess.upper())
 
-    def update_options(self):
-        guess, pattern = self.guesses[-1], self.patterns[-1]
-        condition = make_search_condition(guess, pattern)
-        options = [word for word in self.options if condition(word)]
-        self.options = options
 
-    def respond(self):
-        return self.best_guess
+@dataclass
+class Context:
+    results: list = field(default_factory=list)
 
 
 class Game:
@@ -32,35 +28,45 @@ class Game:
 
     def __init__(self, player, answer):
         self.player = player
-        self._answer = answer
+        self._answer = answer.lower()
+        self._context = Context()
+
+    @property
+    def context(self):
+        return self._context
 
     def run(self, verbose=True):
         for attempt in range(1, Game.LIMIT_ATTEMPTS + 1):
-            guess = self.player.respond()
+            guess = self.player.respond(self.context).lower()
             pattern = Pattern.from_words(guess, self._answer)
-            self.player.guesses.append(guess)
-            self.player.patterns.append(pattern)
-            self.player.update_options()
+            result = Result(guess, pattern)
             if verbose:
-                print(attempt, pattern.display(guess), pattern)
-            if all(x == 0 for x in pattern):
+                print(attempt, result)
+
+            if result.is_correct():
                 break
+
+            self.context.results.append(result)
+            self.player.update(result)
+        else:
+            print(f"The answer was {self._answer}")
+            attempt = Game.LIMIT_ATTEMPTS + 1
 
         return attempt
 
 
-def simulate(n=1000):
-    corpus = list_corpus()
+def simulate(n=1000, verbose=False):
+    corpus = Corpus()
     scores = []
     for _ in range(n):
-        player = Bot()
+        player = SemiHuman()
         answer = random.choice(corpus)
         game = Game(player, answer)
-        score = game.run(verbose=False)
+        score = game.run(verbose=verbose)
         scores.append(score)
 
     return sum(scores) / n
 
 
 if __name__ == "__main__":
-    print(simulate(100))
+    print(simulate(1, True))
