@@ -22,7 +22,7 @@ def format_(session):
     session.run("isort", *args)
 
 
-@nox.session
+@nox.session(python=["3.8"])
 def test(session):
     """Run the tests"""
     session.install("pytest", ".")
