@@ -1,10 +1,11 @@
-import click
 import random
 
+import click
+
+from mordle import player
 from mordle.corpus import Corpus
 from mordle.game import Game, Result
 from mordle.patterns import Pattern
-from mordle import player
 
 
 @click.group()
@@ -24,7 +25,9 @@ def wordle():
 @wordle.command("local")
 @click.option("--auto", "plyr", flag_value="Bot", help="Let a bot play the game")
 @click.option("--human", "plyr", flag_value="Human", help="Let a human play the game")
-@click.option("--semi", "plyr", flag_value="SemiHuman", help="Let a semi-human play the game")
+@click.option(
+    "--semi", "plyr", flag_value="SemiHuman", help="Let a semi-human play the game"
+)
 @click.option("--answer", type=str, default="", help="Force the answer")
 def local(plyr, answer):
     if not answer:
