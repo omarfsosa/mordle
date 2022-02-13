@@ -6,7 +6,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
@@ -15,13 +16,9 @@ jobs:
         run: |
           # install pip=>20.1 to use "pip cache dir"
           python3 -m pip install --upgrade pip
-      - name: Install black, flake8 and isort
+      - name: Install nox
         run: |
-          python3 -m pip install black flake8 isort
+          python3 -m pip install nox
       - name: Lint Python
         run: |
-          black --check $locations
-          flake8 $locations
-          isort --check $locations
-        env:
-          locations: "mordle tests noxfile.py"
+          nox -s lint
