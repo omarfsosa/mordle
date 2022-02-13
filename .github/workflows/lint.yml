@@ -15,9 +15,9 @@ jobs:
         run: |
           # install pip=>20.1 to use "pip cache dir"
           python3 -m pip install --upgrade pip
-      - name: Install nox, flake8 and isort
+      - name: Install black, flake8 and isort
         run: |
-          python3 -m pip install nox flake8 isort
+          python3 -m pip install black, flake8 isort
       - name: Lint Python
         run: |
           black --check $locations
