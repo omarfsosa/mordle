@@ -17,7 +17,7 @@ jobs:
           python3 -m pip install --upgrade pip
       - name: Install black, flake8 and isort
         run: |
-          python3 -m pip install black, flake8 isort
+          python3 -m pip install black flake8 isort
       - name: Lint Python
         run: |
           black --check $locations
