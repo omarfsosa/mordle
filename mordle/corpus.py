@@ -26,12 +26,12 @@ def _load(exclude_past_answers=False):
     return result
 
 
-SIZE = len(_load())
+SIZE = len(_load(False))
 
 
 class Corpus:
-    def __init__(self, words=None):
-        self._words = list(words or _load(True))
+    def __init__(self, words=None, exclude_past_answers=False):
+        self._words = list(words or _load(exclude_past_answers))
 
     def __getitem__(self, index):
         return self._words[index]
