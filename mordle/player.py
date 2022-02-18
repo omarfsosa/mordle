@@ -5,6 +5,8 @@ import math
 from collections import defaultdict
 from pathlib import Path
 
+from tqdm.auto import tqdm
+
 from mordle.corpus import SIZE, Corpus
 from mordle.patterns import Pattern
 
@@ -34,7 +36,7 @@ def calculate_entropies(corpus):
             pass
 
     entropies = {}
-    for guess in corpus:
+    for guess in tqdm(corpus):
         probas = defaultdict(lambda: 0)
         for answer in corpus:
             pattern = Pattern.from_words(guess, answer)
@@ -64,18 +66,19 @@ class Player(abc.ABC):
 class Bot(Player):
     def __init__(self):
         self.corpus = Corpus()
-
-    @property
-    def entropies(self):
-        return calculate_entropies(self.corpus)
+        self.entropies = calculate_entropies(self.corpus)
 
     @property
     def best_guess(self):
         return max(self.entropies, key=self.entropies.get)
 
+    def top_guesses(self, n):
+        return sorted(self.entropies, key=self.entropies.get, reverse=True)[:n]
+
     def update(self, result):
         guess, pattern = result.guess, result.pattern
         self.corpus = self.corpus.reduce(guess, pattern)
+        self.entropies = calculate_entropies(self.corpus)
 
     def respond(self, context):
         return self.best_guess

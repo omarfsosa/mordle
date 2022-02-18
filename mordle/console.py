@@ -43,12 +43,17 @@ def local(plyr, answer):
 def online():
     bot = player.Bot()
     while True:
-        guess = click.prompt("guess: ").lower()
-        values = [int(x) for x in click.prompt("pattern: ").split()]
-        print(values)
+        click.echo(f"Best guess is {bot.best_guess}")
+        click.echo("Top answers are:")
+        top = bot.top_guesses(5)
+        for n, word in enumerate(top):
+            click.echo(f"{n}: {word} {bot.entropies.get(word):4.2f}")
+
+        guess = click.prompt("guess: ").lower()[:5]
+        values = click.prompt("pattern: ")
+        values = [int(x) for x in values]
         result = Result(guess, Pattern(*values))
         if result.is_correct():
             break
 
         bot.update(result)
-        click.echo(f"Best guess is {bot.best_guess}")
