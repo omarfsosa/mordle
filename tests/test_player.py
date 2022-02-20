@@ -7,7 +7,7 @@ from mordle.player import Bot
 
 @pytest.fixture
 def bot():
-    return Bot()
+    return Bot(exclude_past_answers=False)
 
 
 @pytest.mark.parametrize("answer", Corpus())

@@ -64,8 +64,8 @@ class Player(abc.ABC):
 
 
 class Bot(Player):
-    def __init__(self):
-        self.corpus = Corpus(exclude_past_answers=True)
+    def __init__(self, exclude_past_answers=True):
+        self.corpus = Corpus(exclude_past_answers=exclude_past_answers)
         self.entropies = calculate_entropies(self.corpus)
 
     @property
